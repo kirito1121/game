@@ -886,6 +886,13 @@ class LevelController extends Controller
                                 if ($i == 3) {
                                     $item[$i] = false;
                                 }
+                            } else if ($item[0] == 'Highway') {
+                                if ($i == 1) {
+                                    $item[$i] = false;
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = false;
+                                }
                             } else if ($item[0] == 'Container') {
                                 if ($i == 1) {
                                     $item[$i] = array_search($item[$i], config('entity.entityColor'));
@@ -937,5 +944,52 @@ class LevelController extends Controller
         });
         return $obsCollect;
 
+    }
+
+    public function trackDataLevelByVersion(Request $request)
+    {
+        $version = $request->get('appVersion');
+
+        $sql = "WITH wintable AS (
+                    SELECT `Level`,`UserId` ,`AppVersion` FROM winanalytics
+                    ), loseTable AS (SELECT `Level`,`UserId`,`AppVersion` FROM loseanalytics)
+
+                    SELECT `Level`,SUM(userCount) AS userCount,  SUM(winCount) AS winCount, SUM(loseCount) AS loseCount,
+                    SUM(userWin) AS userWin, SUM(userLose) AS userLose, (SUM(winCount) + SUM(loseCount)) AS playTime
+                    FROM (
+                    SELECT `Level`,COUNT(DISTINCT UserId) AS userCount, 0 AS winCount, 0 AS loseCount,0 AS userWin, 0 AS userLose
+                    FROM(
+                    SELECT `Level`,UserId
+                    FROM loseTable WHERE AppVersion = '$version'
+                    UNION ALL
+                    SELECT `Level`,UserId
+                    FROM winTable WHERE AppVersion = '$version'
+                    ) a
+                    GROUP BY `Level`
+                    UNION ALL
+                    SELECT `Level`, 0 AS userCount, SUM(winCount) AS winCount, SUM(loseCount) AS loseCount,SUM(userWin) AS userWin,
+                    SUM(userLose) AS userLose
+                    FROM (
+                    SELECT `Level`,COUNT(UserId) AS winCount, 0 AS loseCount , COUNT(DISTINCT UserId) AS userWin, 0 AS userLose
+                    FROM wintable WHERE AppVersion = '$version' GROUP BY `Level`
+                    UNION
+                    SELECT `Level`,0 AS winCount , COUNT(UserId) AS loseCount,0 AS userWin, COUNT(DISTINCT UserId)  AS userLose
+                    FROM loseTable WHERE AppVersion = '$version' GROUP BY `Level`
+                    ) b GROUP BY `Level`
+                    ) c GROUP BY `Level`
+                    ORDER BY `Level`";
+        $data = collect(DB::select($sql))->toArray();
+
+        for ($i = 0; $i < count($data); $i++) {
+            if (($i + 1) < count($data)) {
+                $data[$i]->droprate = (1 - $data[$i + 1]->userCount / $data[$i]->userCount) * 100;
+                $data[$i]->attempts = $data[$i]->playTime / $data[$i]->userCount;
+            } else {
+                $data[$i]->droprate = 0;
+            }
+        }
+        return $data;
+
+        // return DB::select($sql);
     }
 }

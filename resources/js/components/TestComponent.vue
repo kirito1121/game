@@ -1,29 +1,16 @@
 <template>
 	<v-card>
-		<v-row :key="'row'+kr" v-for="(kr,i) in 8">
-			<v-col :key="'col'+ch" class="ma-1" cols="8" md="1" v-for="(ch,k) in 8">{{i + '-' +k}}</v-col>
-		</v-row>
-
 		<v-card-title>
-			Level Tracking Data Saga
-			<v-spacer></v-spacer>
-			<v-text-field append-icon="mdi-magnify" hide-details label="Search" single-line v-model="search"></v-text-field>
+			<v-list>
+				<v-list-item :key="index" v-for="(item, index) in dataObs">
+					<v-list-item-content>
+						<span color="#e3342f">{{ Object.keys(dataObs).find(key => dataObs[key] === item) }}</span>
+					</v-list-item-content>
+					<v-list-item-content class="align-end">: {{item.toFixed(4)}} %</v-list-item-content>
+				</v-list-item>
+			</v-list>
 		</v-card-title>
-		<div class="container">
-			<v-data-table
-				:headers="headers"
-				:items="data"
-				:items-per-page="15"
-				:search="search"
-				class="elevation-1"
-				disable-items-per-page
-				item-key="name"
-			>
-				<template v-slot:item.droprate="{ item }">
-					<v-chip :color="getColor(item.droprate)" dark>{{item.droprate}}</v-chip>
-				</template>
-			</v-data-table>
-		</div>
+		<div class="container"></div>
 	</v-card>
 </template>
 
@@ -85,9 +72,10 @@ export default {
           droprate: 150
         }
       ],
-      levelType: null,
-      startLevel: null,
-      endLevel: null
+      dataObs: [],
+      levelType: 0,
+      startLevel: 1,
+      endLevel: 690
     }
   },
   create: {},
@@ -100,8 +88,27 @@ export default {
       } else {
         return '#38c172'
       }
+    },
+
+    getObs() {
+      axios
+        .get('api/readDataMapABC', {
+          params: {
+            levelType: 0,
+            startLevel: 1,
+            endLevel: 690
+          }
+        })
+        .then(response => {
+          this.dataObs = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   },
-  mounted() {}
+  mounted() {
+    this.getObs()
+  }
 }
 </script>

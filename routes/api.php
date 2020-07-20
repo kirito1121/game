@@ -22,3 +22,6 @@ Route::get('getLevels', 'LevelController@getLevels');
 Route::get('readDataMapApi', 'LevelController@readDataMapApi');
 Route::get('readDataMapABC', 'LevelController@readDataMapABC');
 Route::get('playDataLevel', 'LevelController@playDataLevel');
+Route::get('trackDataLevelByVersion', 'LevelController@trackDataLevelByVersion');
+
+Route::get('versions', 'VersionController@index');

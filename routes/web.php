@@ -19,6 +19,9 @@ Route::get('/test', function () {
 Route::get('/saga', function () {
     return view('saga');
 });
+Route::get('/sagaByVersion', function () {
+    return view('sagaVersion');
+});
 Route::get('/rush', function () {
     return view('rush');
 });
