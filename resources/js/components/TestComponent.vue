@@ -1,5 +1,9 @@
 <template>
 	<v-card>
+		<v-row :key="'row'+kr" v-for="(kr,i) in 8">
+			<v-col :key="'col'+ch" class="ma-1" cols="8" md="1" v-for="(ch,k) in 8">{{i + '-' +k}}</v-col>
+		</v-row>
+
 		<v-card-title>
 			Level Tracking Data Saga
 			<v-spacer></v-spacer>

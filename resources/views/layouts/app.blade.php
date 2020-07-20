@@ -47,6 +47,9 @@
                         <!-- Authentication Links -->
 
                         <li class="nav-item">
+                            <a class="nav-link" href="/level">Level</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="/test">Test</a>
                         </li>
                         <li class="nav-item">

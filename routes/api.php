@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+Route::get('versions', 'VersionController@index');
+Route::get('viewLevel', 'LevelController@viewLevel');
 Route::post('pushLevel', 'LevelController@pushLevel');
 Route::post('pushLevels', 'LevelController@pushLevels');
 Route::get('getLevel', 'LevelController@getLevel');
 Route::get('getLevels', 'LevelController@getLevels');
 Route::get('readDataMapApi', 'LevelController@readDataMapApi');
+Route::get('readDataMapABC', 'LevelController@readDataMapABC');
 Route::get('playDataLevel', 'LevelController@playDataLevel');

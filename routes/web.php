@@ -22,6 +22,9 @@ Route::get('/saga', function () {
 Route::get('/rush', function () {
     return view('rush');
 });
+Route::get('/level', function () {
+    return view('level');
+});
 
 // Auth::routes();
 

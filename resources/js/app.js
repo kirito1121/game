@@ -23,6 +23,7 @@ window.Vue = require('vue')
 Vue.component('rush-component', require('./components/TrakingDataRushComponent.vue').default)
 Vue.component('saga-component', require('./components/TrakingDataSagaComponent.vue').default)
 Vue.component('test-component', require('./components/TestComponent.vue').default)
+Vue.component('level-component', require('./components/LevelComponent.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

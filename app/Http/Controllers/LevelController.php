@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use function PHPSTORM_META\map;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class LevelController extends Controller
 {
@@ -84,11 +83,7 @@ class LevelController extends Controller
         $levelVersion = $request->get('levelVersion');
         $appVersion = $request->get('appVersion');
         $levelType = intval($request->get('levelType'));
-        $versions = ["1.2.11", "1.4.1.0", "1.4.2.0", "1.4.2.1", "1.4.3", "1.4.4", "1.4.5", "1.4.6", "1.4.7", "1.4.8"];
-
-        $data = $this->readDataMap($level, $levelType, $levelVersion, $appVersion);
-
-        return view('levels.level', compact('data', 'level', 'levelType', 'versions', 'appVersion', 'levelVersion'));
+        return $data = $this->readDataMap($level, $levelType, $levelVersion, $appVersion);
     }
 
     public function readDataMap($level, $levelType = null, $levelVersion = null, $appVersion = null)
@@ -125,69 +120,109 @@ class LevelController extends Controller
         $array = [];
 
         foreach ($levels as $level) {
-            $data = $this->convertFileLv($level);
-            $data['level'] = $level->level;
-            $data['sublevel'] = $level->sublevel;
-            $data['levelVersion'] = $level->levelVersion;
-            $data['appVersion'] = $level->appVersion;
-            $data['levelType'] = $level->levelType;
-            $data['trackingDataLevelTest'] = $this->trackingDataLevelTest($level->level, $level->levelVersion, $level->sublevel);
-            $data['trackingDataLevelReleases'] = $this->trackingDataLevelReleases($level->level, $level->levelVersion, $level->sublevel);
-            $item = $data['i'];
-            $arrm = [];
-            foreach ($item as $key => $it) {
-                $temp = explode(',', $it);
-                $arrm = array_merge($arrm, $temp);
+            $levelitem = $this->convertFileLv($level);
 
-            }
-            $item = $arrm;
-            foreach ($item as $key => $it) {
+            $data = [
+                'level' => $level->level,
+                'sublevel' => $level->sublevel,
+                'target' => array_search($levelitem['a'], config('entity.targetType')),
+                'mapLevel' => $levelitem['g'] . 'x' . $levelitem['h'],
+                'countTarget' => $levelitem['b'],
+                'move' => $levelitem['c'],
+                'hardLevel' => $levelitem['k'] == 0 ? 'No' : 'Yes',
+                'version' => $levelitem['v'],
+                'appVersion' => $level->appVersion,
+                'i' => $levelitem['i'],
+                'j' => $levelitem['j'] ?? null,
+                'l' => $levelitem['l'] ?? null,
+                'p' => $levelitem['p'] ?? null,
+                'g' => $levelitem['g'] ?? null,
+                'h' => $levelitem['h'] ?? null,
+            ];
 
-                $tmp = array_search(intval(str_replace(strstr($it, "_"), "", $it)), config('entity.entityType'));
-                $item[$key] = $it == 42 ? "Car" : $tmp;
-            }
+            // $data['trackingDataLevelTest'] = $this->trackingDataLevelTest($level->level, $level->levelVersion, $level->sublevel);
+            // $data['trackingDataLevelReleases'] = $this->trackingDataLevelReleases($level->level, $level->levelVersion, $level->sublevel);
 
-            $obs = array_count_values(array_diff($item, [""]));
+            $item = collect($levelitem['i']);
 
-            $data['obs'] = $obs;
+            $map = $item->map(function ($m) {
+                $arrB = explode(',', $m);
+                $data = [];
+                foreach ($arrB as $key => $value) {
+                    $arrM = explode('_', $value);
+                    $data = array_merge($data, [$arrM]);
+                }
+                $col = collect($data);
+                $data = $col->map(function ($item) {
+                    for ($i = 0; $i < count($item); $i++) {
+                        if ($i == 0) {
+                            $item[$i] = array_search($item[$i], config('entity.entityType'));
+                        }
+                        if ($item[0]) {
+                            if ($item[0] == 'TrafficCone') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.levels'));
+                                }
+                                if ($i == 2) {
+
+                                    $item[$i] = array_search($item[$i], config('entity.entityColor'));
+                                }
+                            } else if ($item[0] == 'Locker') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.levels'));
+                                }
+                            } else if ($item[0] == 'Bollard') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.bollard'));
+                                }
+                            } else if ($item[0] == 'Tunnel') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.direction'));
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = false;
+                                }
+                                if ($i == 3) {
+                                    $item[$i] = false;
+                                }
+                            } else if ($item[0] == 'Barrier') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.direction'));
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = false;
+                                }
+                                if ($i == 3) {
+                                    $item[$i] = false;
+                                }
+                            } else if ($item[0] == 'Container') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.entityColor'));
+                                }
+                            } else {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.direction'));
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = array_search($item[$i], config('entity.entityColor'));
+                                }
+
+                            }
+                        } else {
+                            $item[$i] = null;
+                        }
+                    }
+                    return implode('', $item);
+                });
+                return $data;
+            });
+
+            $data['obstacle'] = array_count_values(array_diff(Arr::flatten($map->toArray()), [""]));
 
             array_push($array, $data);
+            unset($levelitem);
         }
         return $array;
-    }
-
-    public function checkFile()
-    {
-        $files = count(Storage::disk('local')->allFiles('public/Levels'));
-        $insertData = [];
-
-        $levels = DB::connection('mysqluserDB')->table('levels')->get();
-        $collect = collect($levels);
-        for ($i = 1; $i <= $files; $i++) {
-            if (file_exists(storage_path("levels\Level\/$i.bytes"))) {
-                $content = trim(strstr(file_get_contents(storage_path("levels\Level\/$i.bytes")), "["));
-                $rs = trim(substr($content, 1, strlen($content) - 2));
-                $levels = $collect->where('Level', $i);
-                if ($levels) {
-                    $array_data = $levels->pluck('Data');
-                    if (!in_array($rs, $array_data->toArray())) {
-                        array_push($insertData, ['Level' => $i, 'Data' => $rs, 'Version' => count($levels) + 1, 'DateTime' => now()]);
-                    }
-                } else {
-                    array_push($insertData, ['Level' => $i, 'Data' => $rs, 'Version' => 1, 'DateTime' => now()]);
-                }
-            }
-        }
-        $levels = DB::connection('mysqluserDB')->table('levels')->insert($insertData);
-        return "done";
-    }
-
-    public function viewLevelTable()
-    {
-        $inputFileName = storage_path('Levels\Level.xlsx');
-        $spreadsheet = IOFactory::load($inputFileName);
-        $sheetData = $spreadsheet->getActiveSheet()->toArray();
-        return view('levels.levelTable', compact('sheetData'));
     }
 
     public function pushLevel(Request $request)
@@ -548,7 +583,6 @@ class LevelController extends Controller
                 $obs[$i] = array_merge($obs[$i], ["attempts" => $playdata[$i]->attempts, "droprate" => $playdata[$i]->droprate]);
                 $obs[$i] = array_merge($obs[$i], ["conversion" => $conversionRush[$i]->usedCoinds]);
             }
-
         }
 
         return $obs;
@@ -753,5 +787,155 @@ class LevelController extends Controller
             }
         }
         return $data;
+    }
+
+    public function readDataMapABC(Request $request)
+    {
+        $level = $request->get('level');
+        $sublevel = $request->get('sublevel');
+        $levelType = intval($request->get('levelType'));
+        $start = $request->get('startLevel');
+        $end = $request->get('endLevel');
+
+        $type = null;
+        if ($levelType === 0) {
+            $type = 'Saga';
+        } else if ($levelType === 1) {
+            $type = 'Rush';
+        } else {
+            $type = "EventX";
+        }
+        // return $type;
+        $sub = isset($sublevel) ? "AND subLevel = '$sublevel'" : "";
+
+        $levels = [];
+        for ($i = $start; $i <= $end; $i++) {
+            $sql = "SELECT * FROM levels
+                    WHERE `level` = $i
+                    AND levelType = '$type'
+                    $sub
+                    AND levelVersion = (SELECT MAX(levelVersion) FROM levels WHERE `level` = $i AND levelType = '$type' $sub)
+                    ";
+
+            $level = DB::connection('mysqluserDB')->select($sql);
+            $levels = array_merge($levels, $level);
+        }
+        $levels = collect($levels)->sortBy('level');
+        $array = [];
+        foreach ($levels as $key => $level) {
+            $data = $this->convertFileLv($level);
+            $data['level'] = $level->level;
+            $data['sublevel'] = $level->sublevel;
+            array_push($array, $data);
+        }
+        $obsdata = [];
+        $cl = collect($array);
+        $obs = $cl->map(function ($item, $k) {
+            $data = [
+                'level' => $item['level'],
+                'target' => array_search($item['a'], config('entity.targetType')),
+            ];
+            $mapCollect = collect($item['i']);
+
+            $map = $mapCollect->map(function ($m) {
+                $arrB = explode(',', $m);
+                $data = [];
+                foreach ($arrB as $key => $value) {
+                    $arrM = explode('_', $value);
+                    $data = array_merge($data, [$arrM]);
+                }
+                $col = collect($data);
+                $data = $col->map(function ($item) {
+                    for ($i = 0; $i < count($item); $i++) {
+                        if ($i == 0) {
+                            $item[$i] = array_search($item[$i], config('entity.obsType'));
+                        }
+                        if ($item[0]) {
+                            if ($item[0] == 'TrafficCone') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.levels'));
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = array_search($item[$i], config('entity.entityColor'));
+                                }
+                            } else if ($item[0] == 'Locker') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.levels'));
+                                }
+                            } else if ($item[0] == 'Bollard') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.bollard'));
+                                }
+                            } else if ($item[0] == 'Tunnel') {
+                                if ($i == 1) {
+                                    $item[$i] = false;
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = false;
+                                }
+                                if ($i == 3) {
+                                    $item[$i] = false;
+                                }
+                            } else if ($item[0] == 'Barrier') {
+                                if ($i == 1) {
+                                    $item[$i] = false;
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = false;
+                                }
+                                if ($i == 3) {
+                                    $item[$i] = false;
+                                }
+                            } else if ($item[0] == 'Container') {
+                                if ($i == 1) {
+                                    $item[$i] = array_search($item[$i], config('entity.entityColor'));
+                                }
+                            } else if ($item[0] == 'Car') {
+                                if ($i == 1) {
+                                    $item[$i] = null;
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = array_search($item[$i], config('entity.entityColor'));
+                                }
+
+                            } else if ($item[0] == 'Deployer') {
+                                $item[$i] = null;
+                                if ($i == 1) {
+                                    $item[$i] = null;
+                                }
+                            } else {
+                                if ($i == 1) {
+                                    $item[$i] = false;
+                                }
+                                if ($i == 2) {
+                                    $item[$i] = array_search($item[$i], config('entity.entityColor'));
+                                }
+
+                            }
+                        } else {
+                            $item[$i] = null;
+                        }
+                    }
+                    return implode('', $item);
+                });
+                return $data;
+            });
+
+            $data['obstacle'] = Arr::flatten(array_unique(array_diff(Arr::flatten($map->toArray()), [""])));
+            return $data;
+        });
+
+        foreach ($obs as $key => $item) {
+            $obsdata = array_merge($obsdata, $item['obstacle']);
+        }
+
+        $obsCollect = collect(array_count_values($obsdata));
+
+        $obsCollect = $obsCollect->map(function ($item, $key) {
+            $item = $item / 690 * 100;
+            return $item;
+        });
+        return $obsCollect;
+
     }
 }

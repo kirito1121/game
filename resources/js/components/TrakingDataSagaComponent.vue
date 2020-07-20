@@ -10,10 +10,12 @@
 				:headers="headers"
 				:items="data"
 				:items-per-page="15"
+				:loading="true"
 				:search="search"
 				class="elevation-1"
 				disable-items-per-page
 				item-key="name"
+				loading-text="Loading... Please wait"
 			>
 				<template v-slot:item.hardLevel="{ item }">
 					<v-chip :color="getColorHardLevel(item.hardLevel)" dark>{{item.hardLevel}}</v-chip>
@@ -93,7 +95,7 @@ export default {
           value: 'conversion'
         }
       ],
-      data: [{}],
+      data: [],
       levelType: null,
       startLevel: null,
       endLevel: null

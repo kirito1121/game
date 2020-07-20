@@ -14,7 +14,7 @@ return [
         "Bollard" => 25, // target
         "EmptyObject" => 39,
         "Block" => 41,
-        // "Car" => 42,
+        "Car" => 42,
         "Joker" => 43,
         "Clown" => 44,
         "PoliceCar" => 45,
@@ -70,7 +70,7 @@ return [
         "Off" => 2,
     ],
     "targetType" => [
-        "None" => -1, // Clear the Board
+        "ClearTheBoard" => -1, // Clear the Board
         "FreeAmbulance" => 0,
         "ClearHelipad" => 1,
         "FreeTrain" => 2,
@@ -100,6 +100,7 @@ return [
         "LockerSpawner" => 24,
         "EmptyObject" => 39,
         "Block" => 41,
+        "Car" => 42,
         "PoliceCar" => 45,
         "Smog" => 51,
         "Barrier" => 52,
