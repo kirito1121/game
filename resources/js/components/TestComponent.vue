@@ -10,7 +10,6 @@
 				</v-list-item>
 			</v-list>
 		</v-card-title>
-		<div class="container"></div>
 	</v-card>
 </template>
 

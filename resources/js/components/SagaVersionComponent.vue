@@ -1,6 +1,6 @@
 <template>
 	<v-card>
-		<v-card-title>Level Tracking Data Saga</v-card-title>
+		<v-card-title>Tracking Data Saga By Version</v-card-title>
 		<v-card-title>
 			<v-row align="center" class="ml-5">
 				<v-col cols="12" sm="6">
@@ -20,12 +20,12 @@
 				:headers="headers"
 				:items="data"
 				:items-per-page="15"
-				:loading="true"
 				:rows="[10,20,30]"
 				:search="search"
 				class="elevation-1"
 				disable-items-per-page
 				item-key="name"
+				loading
 				loading-text="Loading... Please wait"
 			>
 				<template v-slot:item.droprate="{ item }">
@@ -138,6 +138,7 @@ export default {
       } else return 0
     },
     searchData() {
+      this.data = []
       this.getDataLevel()
     }
   },

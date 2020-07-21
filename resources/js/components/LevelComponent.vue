@@ -1,6 +1,7 @@
 <template>
 	<v-card>
 		<v-card-title>
+			Data Level
 			<v-spacer></v-spacer>
 			<v-row justify="space-between">
 				<v-col cols="12" md="4">
@@ -35,12 +36,11 @@
 				loading-text="Loading... Please wait"
 				show-expand
 			>
-				<template v-slot:item.obstacle="{ item }">{{item.obstacle}}</template>
-
 				<template v-slot:expanded-item="{ item,headers }">
-					<td :colspan="headers.length" class="text-start">
-						<v-card v-if="item['i']">
-							<v-row :key="'row'+kr" v-for="(kr,i) in Number(item['g'])">
+					<td :colspan="headers.length" class="text-start p-3">
+						<v-card class="p-2" v-if="item['i']">
+							<v-card-title>{{item.obstacle}}</v-card-title>
+							<v-row :key="'row'+kr" class="ml-2" v-for="(kr,i) in Number(item['g'])">
 								<v-col
 									:cols="item['g']"
 									:key="'col'+ch"
@@ -88,10 +88,10 @@ export default {
           text: 'Count Target',
           value: 'countTarget'
         },
-        {
-          text: 'Map data',
-          value: 'obstacle'
-        },
+        // {
+        //   text: 'Map data',
+        //   value: 'obstacle'
+        // },
         {
           text: 'Move',
           value: 'move'

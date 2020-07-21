@@ -17,9 +17,9 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
 
-<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 
 
     <!-- Styles -->
@@ -45,29 +45,28 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-
                         <li class="nav-item">
-                            <a class="nav-link" href="/level">Level</a>
+                            <a class="nav-link" href="/test"> <h3>Test</h3> </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/test">Test</a>
+                            <a class="nav-link" href="/level"> <h3>Level</h3></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/saga">Saga</a>
+                            <a class="nav-link" href="/saga"><h3>Level Saga</h3></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/sagaByVersion">Saga Version</a>
+                            <a class="nav-link" href="/sagaByVersion"><h3>Tracking data level</h3></a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link" href="/rush">Rush</a>
+                            <a class="nav-link" href="/rush"><h3>Level Rush</h3></a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="/conversion"><h3>Conversion</h3></a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
-
         <main class="py-4">
             @yield('content')
         </main>

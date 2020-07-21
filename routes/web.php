@@ -28,6 +28,9 @@ Route::get('/rush', function () {
 Route::get('/level', function () {
     return view('level');
 });
+Route::get('/conversion', function () {
+    return view('conversion');
+});
 
 // Auth::routes();
 

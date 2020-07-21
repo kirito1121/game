@@ -83,7 +83,7 @@ class LevelController extends Controller
         $levelVersion = $request->get('levelVersion');
         $appVersion = $request->get('appVersion');
         $levelType = intval($request->get('levelType'));
-        return $data = $this->readDataMap($level, $levelType, $levelVersion, $appVersion);
+        return $this->readDataMap($level, $levelType, $levelVersion, $appVersion);
     }
 
     public function readDataMap($level, $levelType = null, $levelVersion = null, $appVersion = null)
@@ -95,7 +95,7 @@ class LevelController extends Controller
         if ($levelType === 0) {
             $type = 'Saga';
         } else if ($levelType === 1) {
-            $type = 'RewardRush/ChallengeRace';
+            $type = 'Rush';
         } else {
             $type = "EventX";
         }
@@ -991,5 +991,26 @@ class LevelController extends Controller
         return $data;
 
         // return DB::select($sql);
+    }
+
+    public function conversion(Request $request)
+    {
+
+        $levelType = $request->get('levelType');
+        if (!$levelType) {
+            return null;
+        }
+        $subLevel = $request->get('subLevel');
+        $sub = $subLevel != null ? "AND SubLevel = $subLevel" : "";
+
+        $sql = "SELECT `Level`,`SubLevel`,
+                AVG(UsedCoins) AS usedCoins,
+                AVG(BoosterRainbowBus) AS rainBow,
+                AVG(BoosterTowTruck) AS towTruck,
+                AVG(BoosterPoliceCar) AS police,
+                AVG(BuyMoreMoves) AS buyMoreMove,
+                COUNT(UserId) AS playTime
+                FROM levelanalytics WHERE levelType = '$levelType' $sub GROUP BY Sublevel, `Level` ORDER BY SubLevel,`Level`";
+        return DB::select($sql);
     }
 }
