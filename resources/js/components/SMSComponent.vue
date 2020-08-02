@@ -1,7 +1,7 @@
 <template>
 	<v-card>
 		<v-card-title>
-			Level Tracking Data Saga
+			Data Sms
 			<v-spacer></v-spacer>
 			<v-text-field append-icon="mdi-magnify" hide-details label="Search" single-line v-model="search"></v-text-field>
 		</v-card-title>
@@ -17,32 +17,7 @@
 				item-key="name"
 				loading-text="Loading... Please wait"
 			>
-				<template v-slot:item.hardLevel="{ item }">
-					<v-chip :color="getColorHardLevel(item.hardLevel)" dark>{{item.hardLevel}}</v-chip>
-				</template>
-				<template v-slot:item.droprate="{ item }">
-					<v-chip :color="getColor(convertNumber(item.droprate))" dark>{{convertNumber(item.droprate)}}</v-chip>
-				</template>
-				<template v-slot:item.obstacle="{ item }">{{item.obstacle}}</template>
-				<template slot="body.append" slot-scope="props">
-					<tr class="pink--text">
-						<th class="title"></th>
-						<th class="title"></th>
-						<th class="title"></th>
-						<th class="title"></th>
-						<th class="title"></th>
-						<th class="title"></th>
-						<th class="title">AVG</th>
-						<th class="title">{{ sumField('droprate',props.items) }}</th>
-						<th class="title">{{ sumField('attempts',props.items) }}</th>
-						<th class="title">
-							<v-chip
-								:color="getColorConversion(sumField('conversion',props.items))"
-								dark
-							>{{ sumField('conversion',props.items) }}</v-chip>
-						</th>
-					</tr>
-				</template>
+				<template v-slot:item.dateSent="{ item }">{{ item.dateSent.date }}</template>
 			</v-data-table>
 		</div>
 	</v-card>
@@ -55,103 +30,51 @@ export default {
       search: '',
       headers: [
         {
-          text: 'Level',
-          value: 'level'
+          text: 'From',
+          value: 'from',
         },
         {
-          text: 'Map Level',
-          value: 'mapLevel'
+          text: 'To',
+          value: 'to',
         },
         {
-          text: 'Target',
-          value: 'target'
+          text: 'Status',
+          value: 'status',
         },
         {
-          text: 'Count Target',
-          value: 'countTarget'
+          text: 'Body',
+          value: 'body',
         },
         {
-          text: 'Obstacle',
-          value: 'obstacle'
+          text: 'Direction',
+          value: 'direction',
         },
         {
-          text: 'Move',
-          value: 'move'
+          text: 'Date',
+          value: 'dateSent',
         },
-        {
-          text: 'Hard Level',
-          value: 'hardLevel'
-        },
-        {
-          text: 'Drop Rate (%)',
-          value: 'droprate'
-        },
-        {
-          text: 'Attempts',
-          value: 'attempts'
-        },
-        {
-          text: 'Conversion',
-          value: 'conversion'
-        }
       ],
       data: [],
       levelType: null,
       startLevel: null,
-      endLevel: null
+      endLevel: null,
     }
   },
   create: {},
   methods: {
     getDataLevel() {
       axios
-        .get('api/readDataMapApi', {
-          params: {
-            levelType: 0,
-            startLevel: 1,
-            endLevel: 690
-          }
-        })
-        .then(response => {
+        .get('api/twilio')
+        .then((response) => {
           this.data = response.data
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
-    convertNumber(number) {
-      if (number) {
-        return number.toFixed(4)
-      } else return 0
-    },
-    getColor(val) {
-      if (Number(val) > 15) return '#e3342f'
-      else if (Number(val) > 10) return '#f6993f'
-      else return '#38c172'
-    },
-    getColorHardLevel(str) {
-      if (str == 'Yes') return '#e3342f'
-      else return '#38c172'
-    },
-    getColorConversion(number) {
-      if (number < 1) return '#e3342f'
-      else if (number < 2) return '#f6993f'
-      else return 'green'
-    },
-
-    sumField(key, items) {
-      return (
-        items.reduce((accumulator, currentValue) => {
-          return Number(accumulator) + Number(currentValue[key] || 0)
-        }, 0) / 15
-      ).toFixed(4)
-    },
-    showObs(items, value) {
-      return Object.keys(items).find(key => items[key] === value)
-    }
   },
   mounted() {
     this.getDataLevel()
-  }
+  },
 }
 </script>

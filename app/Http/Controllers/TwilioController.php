@@ -9,7 +9,8 @@ class TwilioController extends Controller
     public function index()
     {
         $sid = "ACd40df911a63cea4375b1a8166a443a5e";
-        $token = "157757d1c7b057aec6216bfffbdef1fd";
+        $token = "737f5ead1dff6551f9d5ba6efc625a47";
+
         $twilio = new Client($sid, $token);
 
         $messages = $twilio->messages
@@ -17,9 +18,15 @@ class TwilioController extends Controller
 
         $data = [];
         foreach ($messages as $key => $record) {
+            // DB::connection('mysqluserDB')->table('sms')->insert([
+            //     "data" => $record,
+            // ]);
             array_push($data, [
                 "body" => $record->body,
                 "direction" => $record->direction,
+                "dateUpdated" => $record->dateUpdated,
+                "dateSent" => $record->dateSent,
+                "dateCreated" => $record->dateCreated,
                 "from" => $record->from,
                 "status" => $record->status,
                 "to" => $record->to,
