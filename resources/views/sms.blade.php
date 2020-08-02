@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <sagaversion-component></sagaversion-component>
+    <sms-component></sms-component>
 @endsection

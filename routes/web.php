@@ -16,20 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/test', function () {
     return view('test');
 });
-Route::get('/saga', function () {
-    return view('saga');
-});
-Route::get('/sagaByVersion', function () {
-    return view('sagaVersion');
-});
-Route::get('/rush', function () {
-    return view('rush');
-});
-Route::get('/level', function () {
-    return view('level');
-});
-Route::get('/conversion', function () {
-    return view('conversion');
+Route::get('/sms', function () {
+    return view('sms');
 });
 
 // Auth::routes();

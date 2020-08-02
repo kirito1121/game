@@ -49,19 +49,7 @@
                             <a class="nav-link" href="/test"> <h3>Test</h3> </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/level"> <h3>Level</h3></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/saga"><h3>Level Saga</h3></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/sagaByVersion"><h3>Tracking data level</h3></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/rush"><h3>Level Rush</h3></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/conversion"><h3>Conversion</h3></a>
+                            <a class="nav-link" href="/sms"> <h3>SMS</h3></a>
                         </li>
                     </ul>
                 </div>

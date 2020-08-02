@@ -20,12 +20,8 @@ window.Vue = require('vue')
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 
-Vue.component('rush-component', require('./components/TrakingDataRushComponent.vue').default)
-Vue.component('saga-component', require('./components/TrakingDataSagaComponent.vue').default)
+Vue.component('sms-component', require('./components/SMSComponent.vue').default)
 Vue.component('test-component', require('./components/TestComponent.vue').default)
-Vue.component('level-component', require('./components/LevelComponent.vue').default)
-Vue.component('sagaversion-component', require('./components/SagaVersionComponent.vue').default)
-Vue.component('conversion-component', require('./components/ConversionComponent.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
