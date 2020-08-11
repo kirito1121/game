@@ -42,6 +42,8 @@ return [
         "Container" => 83,
         "Tunnel" => 84,
         "Spaceship" => 65, // target
+        "Virus" => 85,
+        "FoldingBarrier" => 65,
     ],
 
     "entityColor" => [
@@ -114,6 +116,7 @@ return [
         "Container" => 83,
         "Tunnel" => 84,
         "TrafficCone" => 49,
+        "Virus" => 85,
     ],
     "target" => [
         "Snow",
